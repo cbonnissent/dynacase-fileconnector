@@ -529,7 +529,7 @@ final protected function designProcessus() {
   
   $exist = false;
   if ($this->getValue("ifc_p_procid")>0) {
-    $dp = new_Doc($this->dbaccess, $this->getValue("ifc_p_procid"));
+    $dp = new_Doc($this->dbaccess, $this->getValue("ifc_p_procid"), true);
     if ($dp->isAlive()) $exist = true;
   }
     
@@ -563,10 +563,14 @@ final protected function designProcessus() {
   }
 
   $err = $dp->modify();
-  if ($err!='') {
-    $err = $dp->postModify();
-    if ($err!='') $err = $dp->refresh();
+  if ($err != '') {
+    return $err;
   }
+  $err = $dp->postModify();
+  if ($err != '') {
+    return $err;
+  }
+  $err = $dp->refresh();
   return $err;
 }
 
